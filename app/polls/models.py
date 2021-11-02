@@ -83,3 +83,54 @@ class Choice(models.Model):
 
     def __str__(self):
         return self.choice_text
+
+
+class Answer(models.Model):
+    respondent = models.IntegerField(verbose_name='respondent_id')
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    choice = models.ForeignKey(Choice, on_delete=models.CASCADE,
+                               blank=True, null=True)
+    choice_text = models.CharField(max_length=500, blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'answer'
+        verbose_name_plural = 'answers'
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=('respondent', 'question_id'),
+                name='unique_respondent_poll_question'
+            ),
+            models.CheckConstraint(
+                check=(Q(choice__isnull=True, choice_text__isnull=False)
+                       | Q(choice__isnull=False, choice_text__isnull=True)),
+                name='choice_id_or_text_choice_required',
+            )
+        ]
+
+    def clean(self):
+        super().clean()
+
+        # check if get a Choice for text question
+        question_type = self.question.question_type
+        if question_type == Question.TEXT and self.choice is not None:
+            raise ValidationError(
+                'For a text question the answer can only be plain text, '
+                'not a Choice.'
+            )
+
+        # check if get a text for choice question
+        question_type = self.question.question_type
+        if question_type != Question.TEXT and self.choice_text is not None:
+            raise ValidationError(
+                'For a choice question the answer can only be a Choice, '
+                'not a plain text.'
+            )
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'answer to {self.question_id}' \
+               f'from {self.respondent}'
