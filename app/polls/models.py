@@ -55,7 +55,7 @@ class Choice(models.Model):
         related_name='choices',
         related_query_name='choice',
     )
-    choice_text = models.CharField(max_length=500)
+    choice_text = models.CharField(max_length=500, blank=True, null=True)
 
     class Meta:
         verbose_name = 'choice'
