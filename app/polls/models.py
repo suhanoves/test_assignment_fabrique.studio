@@ -23,11 +23,15 @@ class Poll(models.Model):
 
 
 class Question(models.Model):
+    TEXT = 1
+    RADIO = 2
+    CHECKBOX = 3
     QUESTION_TYPES_CHOICES = (
-        (1, 'text'),
-        (2, 'radio'),
-        (3, 'checkbox')
+        (TEXT, 'text'),
+        (RADIO, 'radio'),
+        (CHECKBOX, 'checkbox')
     )
+
     poll = models.ForeignKey(
         Poll,
         on_delete=models.CASCADE,
@@ -37,7 +41,7 @@ class Question(models.Model):
     question_text = models.CharField(max_length=500)
     question_type = models.IntegerField(
         choices=QUESTION_TYPES_CHOICES,
-        default=2,
+        default=RADIO,
     )
 
     class Meta:
