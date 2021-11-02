@@ -50,6 +50,13 @@ class Question(models.Model):
         verbose_name = 'question'
         verbose_name_plural = 'questions'
 
+        constraints = [
+            models.UniqueConstraint(
+                fields=('poll', 'question_text', 'question_type'),
+                name='unique_poll_question_question_type',
+            ),
+        ]
+
     def __str__(self):
         return self.question_text
 
@@ -78,11 +85,12 @@ class Choice(models.Model):
         super().clean()
         if self.question.question_type == Question.TEXT:
             raise ValidationError(
-                'You cannot save Choice for text question'
+                'You cannot add Choice for text question'
             )
 
-    def __str__(self):
-        return self.choice_text
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super().save(*args, **kwargs)
 
 
 class Answer(models.Model):
