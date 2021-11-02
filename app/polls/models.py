@@ -46,3 +46,27 @@ class Question(models.Model):
 
     def __str__(self):
         return self.question_text
+
+
+class Choice(models.Model):
+    question = models.ForeignKey(
+        Question,
+        on_delete=models.CASCADE,
+        related_name='choices',
+        related_query_name='choice',
+    )
+    choice_text = models.CharField(max_length=500)
+
+    class Meta:
+        verbose_name = 'choice'
+        verbose_name_plural = 'choices'
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=('question', 'choice_text'),
+                name='unique_question_choice_text',
+            ),
+        ]
+
+    def __str__(self):
+        return self.choice_text
