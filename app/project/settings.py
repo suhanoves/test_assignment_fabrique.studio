@@ -29,12 +29,21 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 # Application definition
 
 INSTALLED_APPS = [
+    # django app
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # third-side app
+    'rest_framework',
+
+    # my app
+    'polls.apps.PollsConfig',
+    'rest_api.apps.RestApiConfig',
+
 ]
 
 MIDDLEWARE = [
