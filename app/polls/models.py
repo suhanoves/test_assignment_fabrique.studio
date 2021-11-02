@@ -127,6 +127,12 @@ class Answer(models.Model):
                 'not a plain text.'
             )
 
+        # checking that the Choice belong to the Question
+        if self.choice is not None and self.choice.question != self.question:
+            raise ValidationError(
+                'The Choice does not belong to the Question'
+            )
+
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
