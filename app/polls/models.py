@@ -20,3 +20,29 @@ class Poll(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Question(models.Model):
+    QUESTION_TYPES_CHOICES = (
+        (1, 'text'),
+        (2, 'radio'),
+        (3, 'checkbox')
+    )
+    poll = models.ForeignKey(
+        Poll,
+        on_delete=models.CASCADE,
+        related_name='questions',
+        related_query_name='question',
+    )
+    question_text = models.CharField(max_length=500)
+    question_type = models.IntegerField(
+        choices=QUESTION_TYPES_CHOICES,
+        default=2,
+    )
+
+    class Meta:
+        verbose_name = 'question'
+        verbose_name_plural = 'questions'
+
+    def __str__(self):
+        return self.question_text
