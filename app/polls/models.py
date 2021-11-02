@@ -1,4 +1,6 @@
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import Q
 
 
 class Poll(models.Model):
@@ -71,6 +73,13 @@ class Choice(models.Model):
                 name='unique_question_choice_text',
             ),
         ]
+
+    def clean(self):
+        super().clean()
+        if self.question.question_type == Question.TEXT:
+            raise ValidationError(
+                'You cannot save Choice for text question'
+            )
 
     def __str__(self):
         return self.choice_text
