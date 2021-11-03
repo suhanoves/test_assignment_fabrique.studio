@@ -93,6 +93,9 @@ class Choice(models.Model):
         self.full_clean()
         return super().save(*args, **kwargs)
 
+    def __str__(self):
+        return f'{self.question_id}. {self.choice_text}'
+
 
 class Answer(models.Model):
     respondent = models.IntegerField(verbose_name='respondent_id')
