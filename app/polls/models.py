@@ -25,9 +25,9 @@ class Poll(models.Model):
 
 
 class Question(models.Model):
-    TEXT = 1
-    RADIO = 2
-    CHECKBOX = 3
+    TEXT = 'text'
+    RADIO = 'radio'
+    CHECKBOX = 'checkbox'
     QUESTION_TYPES_CHOICES = (
         (TEXT, 'text'),
         (RADIO, 'radio'),
@@ -41,7 +41,8 @@ class Question(models.Model):
         related_query_name='question',
     )
     question_text = models.CharField(max_length=500)
-    question_type = models.IntegerField(
+    question_type = models.CharField(
+        max_length=8,
         choices=QUESTION_TYPES_CHOICES,
         default=RADIO,
     )
