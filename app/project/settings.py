@@ -39,6 +39,7 @@ INSTALLED_APPS = [
 
     # third-side app
     'rest_framework',
+    'nested_admin',
 
     # my app
     'polls.apps.PollsConfig',
