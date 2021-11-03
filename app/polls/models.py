@@ -173,5 +173,4 @@ class Answer(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'answer to {self.question_id}' \
-               f'from {self.respondent}'
+        return f'answer to {self.question_id} from {self.respondent}'
