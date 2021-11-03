@@ -101,7 +101,10 @@ class Choice(models.Model):
 
 class Answer(models.Model):
     respondent = models.IntegerField(verbose_name='respondent_id')
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question,
+                                 on_delete=models.CASCADE,
+                                 related_name='answers',
+                                 related_query_name='answer')
     choice = models.ForeignKey(Choice, on_delete=models.CASCADE,
                                blank=True, null=True)
     choice_text = models.CharField(max_length=500, blank=True, null=True)
