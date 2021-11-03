@@ -1,20 +1,22 @@
 from django.contrib import admin
+from nested_admin import nested
 
 from polls.models import Poll, Question, Choice, Answer
 
 
-class ChoiceInline(admin.StackedInline):
+class ChoiceInline(nested.NestedStackedInline):
     model = Choice
     extra = 0
 
 
-class QuestionInline(admin.StackedInline):
+class QuestionInline(nested.NestedStackedInline):
     model = Question
     extra = 0
+    inlines = [ChoiceInline]
 
 
 @admin.register(Poll)
-class PollAdmin(admin.ModelAdmin):
+class PollAdmin(nested.NestedModelAdmin):
     list_display = ('title', 'description', 'pub_date', 'expiry_date')
     inlines = (QuestionInline,)
 
@@ -24,21 +26,9 @@ class PollAdmin(admin.ModelAdmin):
         return self.readonly_fields
 
 
-@admin.register(Question)
-class QuestionAdmin(admin.ModelAdmin):
-    list_display = ('question_text', 'question_type', 'poll_id',)
-    inlines = (ChoiceInline,)
-
-
 @admin.register(Answer)
-class AnswerAdmin(admin.ModelAdmin):
+class AnswerAdmin(nested.NestedModelAdmin):
     list_display = ('respondent', 'question', 'choice', 'choice_text')
-    list_select_related = ('question', 'choice')
-
-
-@admin.register(Choice)
-class AnswerAdmin(admin.ModelAdmin):
-    list_display = ('question', 'choice_text')
+    list_filter = ('respondent', 'question')
     list_select_related = ('question',)
     list_display_links = ('question',)
-    list_editable = ('choice_text',)
