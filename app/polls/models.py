@@ -112,8 +112,13 @@ class Answer(models.Model):
 
         constraints = [
             models.UniqueConstraint(
-                fields=('respondent', 'question_id'),
-                name='unique_respondent_poll_question'
+                fields=('respondent', 'question_id', 'choice'),
+                name='unique_respondent_question_choice'
+            ),
+            models.UniqueConstraint(
+                fields=('respondent', 'question_id', 'choice_text'),
+                condition=Q(choice_text__isnull=False),
+                name='unique_respondent_question_choice_text'
             ),
             models.CheckConstraint(
                 check=(Q(choice__isnull=True, choice_text__isnull=False)
