@@ -129,9 +129,9 @@ class Answer(models.Model):
 
     def clean(self):
         super().clean()
+        question_type = self.question.question_type
 
         # check if get a Choice for text question
-        question_type = self.question.question_type
         if question_type == Question.TEXT and self.choice is not None:
             raise ValidationError(
                 'For a text question the answer can only be plain text, '
@@ -139,7 +139,6 @@ class Answer(models.Model):
             )
 
         # check if get a text for choice question
-        question_type = self.question.question_type
         if question_type != Question.TEXT and self.choice_text is not None:
             raise ValidationError(
                 'For a choice question the answer can only be a Choice, '
@@ -151,6 +150,23 @@ class Answer(models.Model):
             raise ValidationError(
                 'The Choice does not belong to the Question'
             )
+
+        # check that the user has already answered this question
+        if question_type in (Question.TEXT, Question.RADIO):
+            answer = Answer.objects.filter(respondent=self.respondent,
+                                           question=self.question)
+            if answer.exists():
+                raise ValidationError(
+                    'You have already answered this question'
+                )
+        elif question_type == Question.CHECKBOX:
+            answer = Answer.objects.filter(respondent=self.respondent,
+                                           question=self.question,
+                                           choice=self.choice)
+            if answer.exists():
+                raise ValidationError(
+                    'We have already recorded this answer.'
+                )
 
     def save(self, *args, **kwargs):
         self.full_clean()
