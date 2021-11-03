@@ -50,6 +50,7 @@ class Question(models.Model):
     class Meta:
         verbose_name = 'question'
         verbose_name_plural = 'questions'
+        ordering = ('pk', )
 
         constraints = [
             models.UniqueConstraint(
@@ -74,6 +75,7 @@ class Choice(models.Model):
     class Meta:
         verbose_name = 'choice'
         verbose_name_plural = 'choices'
+        ordering = ('pk', )
 
         constraints = [
             models.UniqueConstraint(
